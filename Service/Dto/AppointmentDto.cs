@@ -4,10 +4,10 @@ public sealed record AppointmentDto(
     DateTime Start,
     DateTime End,
     string Comments,
-    Patient Patient
+    PatientDto Patient
 );
 
-public sealed record Patient(
+public sealed record PatientDto(
     string Name,
     string SecondName,
     string Email,

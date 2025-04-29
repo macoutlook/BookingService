@@ -1,33 +1,33 @@
 ﻿namespace Service.Dto;
 
 public record ScheduletDto(
-    Facility Facility,
+    FacilityDto Facility,
     int SlotDurationMinutes,
-    DaySchedule? Monday = null,
-    DaySchedule? Tuesday = null,
-    DaySchedule? Wednesday = null,
-    DaySchedule? Thursday = null,
-    DaySchedule? Friday = null
+    DayScheduleDto? Monday = null,
+    DayScheduleDto? Tuesday = null,
+    DayScheduleDto? Wednesday = null,
+    DayScheduleDto? Thursday = null,
+    DayScheduleDto? Friday = null
 );
 
-public record Facility(
+public record FacilityDto(
     string Name,
     string Address
 );
 
-public record DaySchedule(
-    WorkPeriod WorkPeriod,
-    List<BusySlot> BusySlots
+public record DayScheduleDto(
+    WorkPeriodDto WorkPeriod,
+    List<SlotDto> BusySlots
 );
 
-public record WorkPeriod(
+public record WorkPeriodDto(
     int StartHour,
     int EndHour,
     int LunchStartHour,
     int LunchEndHour
 );
 
-public record BusySlot(
+public record SlotDto(
     DateTime Start,
     DateTime End
 );
