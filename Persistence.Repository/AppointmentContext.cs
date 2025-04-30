@@ -13,11 +13,12 @@ public class AppointmentContext(DbContextOptions<AppointmentContext> options) : 
 {
     public DbSet<Appointment> Appointment { get; set; }
     public DbSet<Schedule> Schedule { get; set; }
+    public DbSet<Patient> Patient { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Schedule>()
-            .HasKey(s => s.Id);
+            .HasKey(s => s.StartDate);
         modelBuilder.Entity<Schedule>()
             .HasIndex(s => s.StartDate)
             .HasDatabaseName("IX_StartDate")
@@ -36,8 +37,20 @@ public class AppointmentContext(DbContextOptions<AppointmentContext> options) : 
         modelBuilder.Entity<Patient>()
             .HasKey(s => s.Id);
         
+        modelBuilder.Entity<Patient>()
+            .HasIndex(s => s.Email)
+            .IsUnique();
+        
+        modelBuilder.Entity<Patient>()
+            .HasIndex(s => s.Phone)
+            .IsUnique();
+        
         modelBuilder.Entity<Slot>()
             .HasKey(s => s.Id);
+
+        modelBuilder.Entity<Slot>()
+            .HasIndex(s => new { s.Start, s.End, s.ScheduleStartDate })
+            .IsUnique();
         
         modelBuilder.Entity<WorkPeriod>()
             .HasKey(s => s.Id);

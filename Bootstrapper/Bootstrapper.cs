@@ -19,6 +19,7 @@ public static class Bootstrapper
     public static void RegisterPersistence(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+        services.AddScoped<IPatientRepository, PatientRepository>();
         services.AddDbContext<AppointmentContext>(options =>
             options.UseSqlServer(configuration.GetSection("ConnectionString").Value));
     }
@@ -84,7 +85,8 @@ public static class Bootstrapper
                     9, 0, 0),
                 End = new DateTime(startScheduleDateTime.Year, startScheduleDateTime.Month, startScheduleDateTime.Day,
                     9, 30, 0),
-                Day = DayOfWeek.Monday
+                Day = DayOfWeek.Monday,
+                ScheduleStartDate = DateOnly.FromDateTime(startScheduleDateTime.Date)
             },
             new()
             {
@@ -92,7 +94,8 @@ public static class Bootstrapper
                     startScheduleDateTime.Day + 1, 11, 30, 0),
                 End = new DateTime(startScheduleDateTime.Year, startScheduleDateTime.Month,
                     startScheduleDateTime.Day + 1, 12, 00, 0),
-                Day = DayOfWeek.Tuesday
+                Day = DayOfWeek.Tuesday,
+                ScheduleStartDate = DateOnly.FromDateTime(startScheduleDateTime.Date)
             }
         };
 
@@ -108,23 +111,16 @@ public static class Bootstrapper
             new()
             {
                 Name = "John",
-                Surname = "Doe",
+                SecondName = "Doe",
                 Email = "johndoe@example.com",
                 Phone = "123-456-7890"
             },
             new()
             {
                 Name = "Jane",
-                Surname = "Smith",
+                SecondName = "Smith",
                 Email = "janesmith@example.com",
                 Phone = "098-765-4321"
-            },
-            new()
-            {
-                Name = "Alice",
-                Surname = "Johnson",
-                Email = "alicejohnson@example.com",
-                Phone = "555-123-4567"
             }
         };
 
@@ -160,10 +156,10 @@ public static class Bootstrapper
         var schedule =
             new Schedule
             {
+                StartDate = DateOnly.FromDateTime(startScheduleDateTime.Date),
                 Facility = facility,
                 SlotDurationMinutes = 30,
                 DaySchedules = daySchedules,
-                StartDate = DateOnly.FromDateTime(startScheduleDateTime.Date),
                 BusySlots = slots
             };
 

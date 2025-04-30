@@ -9,6 +9,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Core.Application.Contract\Core.Application.Contract.csproj"/>
+        <ProjectReference Include="..\Core.Exceptions\Core.Exceptions.csproj" />
         <ProjectReference Include="..\Core.Persistence.Contract\Core.Persistence.Contract.csproj"/>
     </ItemGroup>
 

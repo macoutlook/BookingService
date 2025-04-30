@@ -23,15 +23,16 @@ public class Controller(
     [HttpPost]
     [Route("/TakeSlot")]
     [ProducesResponseType((int)HttpStatusCode.Created)]
+    [ProducesResponseType((int)HttpStatusCode.NotFound)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
     public async Task<ActionResult<string>> TakeSlot([FromBody] [Required] AppointmentDto appointmentDto,
         CancellationToken cancellationToken = default)
     {
-        var bookId = await slotService.TakeSlotAsync(mapper.Map<Slot>(appointmentDto), cancellationToken);
+        var appointmentId = await slotService.TakeSlotAsync(mapper.Map<Appointment>(appointmentDto), cancellationToken);
 
-        logger.LogInformation("Book with id={bookId} was created.", bookId);
+        logger.LogInformation("Appointment with id={appointmentId} was created.", appointmentId);
 
-        return Created($"/book/{bookId}", bookId);
+        return Created();
     }
 
     [HttpGet]

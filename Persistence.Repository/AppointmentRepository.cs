@@ -8,9 +8,13 @@ public class AppointmentRepository(AppointmentContext context) : IAppointmentRep
 {
     # region Command
 
-    public Task<ulong> AddAsync(Appointment appointment, CancellationToken cancellationToken = default)
+    public async Task<ulong> AddAsync(Appointment appointment, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        context.Patient.Attach(appointment.Patient);
+        await context.Appointment.AddAsync(appointment, cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);  
+        
+        return appointment.Id;
     }
     # endregion
 

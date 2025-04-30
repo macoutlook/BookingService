@@ -1,15 +1,17 @@
 namespace Service.Dto;
 
-public sealed record AppointmentDto(
-    DateTime Start,
-    DateTime End,
-    string Comments,
-    PatientDto Patient
-);
+public sealed class AppointmentDto
+{
+    public required string Start { get; set; }
+    public required string End { get; set; }
+    public string? Comments { get; set; }
+    public required PatientDto Patient { get; set; }
+}
 
-public sealed record PatientDto(
-    string Name,
-    string SecondName,
-    string Email,
-    string Phone
-);
+public sealed class PatientDto
+{
+    public required string Name { get; set; }
+    public required string SecondName { get; set; }
+    public required string Email { get; set; }
+    public required string Phone { get; set; }
+}

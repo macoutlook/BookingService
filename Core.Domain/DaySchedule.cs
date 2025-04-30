@@ -3,6 +3,6 @@
 public class DaySchedule
 {
     public ulong Id { get; init; }
-    public DayOfWeek Day { get; init; }
-    public WorkPeriod WorkPeriod { get; init; } = null!;
+    public required DayOfWeek Day { get; init; }
+    public required WorkPeriod WorkPeriod { get; init; } = null!;
 }

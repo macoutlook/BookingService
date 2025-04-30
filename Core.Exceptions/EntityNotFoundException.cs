@@ -1,8 +1,8 @@
 ﻿namespace Core.Exceptions;
 
-public class NoRecordCreatedException : Exception, IException
+public class EntityNotFoundException : Exception, IException
 {
-    public NoRecordCreatedException(string message) : base(message)
+    public EntityNotFoundException(string message) : base(message)
     {
         StatusCode = 400;
         OutsideMessage = message;
