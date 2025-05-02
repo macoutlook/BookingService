@@ -11,7 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3-Persistence", "3-Persiste
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Application", "Core.Application\Core.Application.csproj", "{05B98468-A461-40D8-AF02-DF2F60275D2A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Persistence.AppointmentRepository", "Persistence.Repository\Persistence.AppointmentRepository.csproj", "{923AEA1F-844D-4EC1-9F89-2FE4BAEBE8F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Persistence.Repository", "Persistence.Repository\Persistence.Repository.csproj", "{923AEA1F-844D-4EC1-9F89-2FE4BAEBE8F0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Application.Contract", "Core.Application.Contract\Core.Application.Contract.csproj", "{B72AFB25-8DD2-4EB8-B95D-7CE41E21908D}"
 EndProject

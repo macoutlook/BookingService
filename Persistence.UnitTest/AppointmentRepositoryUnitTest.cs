@@ -3,7 +3,7 @@
 // using EntityFrameworkCore.Testing.Moq;
 // using FluentAssertions;
 // using Microsoft.VisualStudio.TestTools.UnitTesting;
-// using Persistence.AppointmentRepository;
+// using Persistence.Repository;
 // using Service;
 //
 // namespace Persistence.UnitTest;

@@ -2,7 +2,7 @@
 using Core.Persistence.Contract;
 using Microsoft.EntityFrameworkCore;
 
-namespace Persistence.AppointmentRepository;
+namespace Persistence.Repository;
 
 public class AppointmentRepository(AppointmentContext context) : IAppointmentRepository
 {

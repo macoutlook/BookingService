@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Patient = Core.Domain.Patient;
 
-namespace Persistence.AppointmentRepository;
+namespace Persistence.Repository;
 
 /// <summary>
 ///     Database context from which db migration was generated.
@@ -14,6 +14,7 @@ public class AppointmentContext(DbContextOptions<AppointmentContext> options) : 
     public DbSet<Appointment> Appointment { get; set; }
     public DbSet<Schedule> Schedule { get; set; }
     public DbSet<Patient> Patient { get; set; }
+    public DbSet<User> User { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -26,23 +27,23 @@ public class AppointmentContext(DbContextOptions<AppointmentContext> options) : 
             .IsClustered(false);
         
         modelBuilder.Entity<Appointment>()
-            .HasKey(s => s.Id);
+            .HasKey(a => a.Id);
         
         modelBuilder.Entity<DaySchedule>()
-            .HasKey(s => s.Id);
+            .HasKey(d => d.Id);
         
         modelBuilder.Entity<Facility>()
-            .HasKey(s => s.Id);
+            .HasKey(f => f.Id);
         
         modelBuilder.Entity<Patient>()
-            .HasKey(s => s.Id);
+            .HasKey(p => p.Id);
         
         modelBuilder.Entity<Patient>()
-            .HasIndex(s => s.Email)
+            .HasIndex(p => p.Email)
             .IsUnique();
         
         modelBuilder.Entity<Patient>()
-            .HasIndex(s => s.Phone)
+            .HasIndex(p => p.Phone)
             .IsUnique();
         
         modelBuilder.Entity<Slot>()
@@ -53,6 +54,13 @@ public class AppointmentContext(DbContextOptions<AppointmentContext> options) : 
             .IsUnique();
         
         modelBuilder.Entity<WorkPeriod>()
-            .HasKey(s => s.Id);
+            .HasKey(w => w.Id);
+        
+        modelBuilder.Entity<User>()
+            .HasKey(u => u.Id);
+        
+        modelBuilder.Entity<User>()
+            .HasIndex(u => u.Name)
+            .IsUnique();
     }
 }

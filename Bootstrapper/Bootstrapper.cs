@@ -5,7 +5,7 @@ using Core.Persistence.Contract;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Persistence.AppointmentRepository;
+using Persistence.Repository;
 
 namespace Bootstrapper;
 
@@ -20,6 +20,7 @@ public static class Bootstrapper
     {
         services.AddScoped<IAppointmentRepository, AppointmentRepository>();
         services.AddScoped<IPatientRepository, PatientRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
         services.AddDbContext<AppointmentContext>(options =>
             options.UseSqlServer(configuration.GetSection("ConnectionString").Value));
     }
@@ -178,6 +179,14 @@ public static class Bootstrapper
                 Patient = patients[1]
             }
         };
+
+        var user = new User
+        {
+            Name = "techuser",
+            Password = "secretpassWord"
+        };
+
+        context.Add(user);
         context.Appointment.AddRange(appointments);
         context.Schedule.Add(schedule);
         await context.SaveChangesAsync();

@@ -26,7 +26,7 @@ public class SlotServiceTests
     }
 
     [Fact]
-    public async Task TakeSlotAsync_ShouldReturnAppointmentId_WhenSlotIsSuccessfullyBooked()
+    public async Task TakeSlotAsync_ProperSlotGiven_ReturnsAppointmentId()
     {
         // Arrange
         var startDate = new DateOnly(2025, 5, 5);
@@ -114,7 +114,7 @@ public class SlotServiceTests
     }
 
     [Fact]
-    public async Task TakeSlotAsync_ShouldThrowEntityNotFoundException_WhenPatientNotFound()
+    public async Task TakeSlotAsync_PatientNotFound_ThrowsEntityNotFoundException()
     {
         // Arrange
         var appointment = new Appointment
@@ -148,7 +148,7 @@ public class SlotServiceTests
     }
 
     [Fact]
-    public async Task TakeSlotAsync_ShouldThrowEntityNotFoundException_WhenScheduleNotFound()
+    public async Task TakeSlotAsync_ScheduleNotFound_ThrowsEntityNotFoundException()
     {
         // Arrange
         var appointment = new Appointment
@@ -184,7 +184,7 @@ public class SlotServiceTests
     }
 
     [Fact]
-    public async Task GetAvailabilityAsync_ShouldReturnSchedule_WhenDateIsValid()
+    public async Task GetAvailabilityAsync_ValidDateGiven_ReturnsSchedule()
     {
         // Arrange
         var startDate = new DateOnly(2025, 5, 5);

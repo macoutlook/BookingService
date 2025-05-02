@@ -13,7 +13,6 @@ public class MappingProfile : Profile
     public MappingProfile()
     {
         CreateMap<string, DateTime>().ConvertUsing(s => DateTime.Parse(s, CultureInfo.InvariantCulture));
-        
         CreateMap<AppointmentDto, Appointment>()
             .ForMember(dest => dest.Slot, opt => opt.MapFrom(src => new Slot
             {
@@ -21,13 +20,11 @@ public class MappingProfile : Profile
                 End = DateTime.Parse(src.End),
                 Day = DateTime.Parse(src.Start).DayOfWeek
             }));
-        
         CreateMap<Appointment, AppointmentDto>()
             .ForMember(dest => dest.Start,
                 opt => opt.MapFrom(src => src.Slot.Start.ToString("yyyy-MM-dd HH:mm:ss")))
             .ForMember(dest => dest.End,
                 opt => opt.MapFrom(src => src.Slot.End.ToString("yyyy-MM-dd HH:mm:ss")));
-
         CreateMap<SlotDto, Slot>().ReverseMap();
         CreateMap<FacilityDto, DomainFacility>().ReverseMap();
         CreateMap<PatientDto, DomainPatient>().ReverseMap();
