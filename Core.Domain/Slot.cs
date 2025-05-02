@@ -1,6 +1,6 @@
 ﻿namespace Core.Domain;
 
-public class Slot
+public sealed class Slot
 {
     public ulong Id { get; init; }
     public required DateTime Start { get; init; }

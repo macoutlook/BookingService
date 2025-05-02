@@ -1,6 +1,6 @@
 ﻿namespace Core.Domain;
 
-public class WorkPeriod
+public sealed class WorkPeriod
 {
     public ulong Id { get; init; }
     

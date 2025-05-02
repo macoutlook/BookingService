@@ -24,7 +24,7 @@ public class SlotService(
         var closestMonday = GetClosestMonday(appointment.Slot.Start.Date);
         var schedule = await appointmentRepository.GetScheduleAsync(closestMonday, cancellationToken);
         if (schedule is null)
-            throw new EntityNotFoundException("Slot cannot be found in any schedule.");
+            throw new EntityNotFoundException("Schedule cannot be found.");
 
         appointment.Slot.ScheduleStartDate = closestMonday;
 

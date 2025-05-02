@@ -3,19 +3,30 @@ using Service.Dto;
 
 namespace Service.Validators;
 
-internal abstract class AppointmentDtoValidator : AbstractValidator<AppointmentDto>
+public sealed class AppointmentDtoValidator : AbstractValidator<AppointmentDto>
 {
+    private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss";
+
     public AppointmentDtoValidator()
     {
-        // TODO: validate if date in get slots is monday
-        
-        // RuleFor(a => a).NotEmpty();
-        // RuleFor(r => r.Title).NotEmpty();
-        // RuleFor(r => r.Title).Length(1, 320).WithMessage("Title must be between 3 and 50 characters long.");
-        // RuleFor(r => r.Author).NotEmpty();
-        // RuleFor(r => r.Title).Length(3, 320).WithMessage("Title must be between 3 and 50 characters long.");
-        // RuleFor(r => r.Isbn).NotEmpty();
-        // RuleFor(r => r.Isbn).Length(17);
-        // RuleFor(r => r.BookStatus).NotEmpty();
+        RuleFor(a => a).NotEmpty();
+        RuleFor(a => a.Start)
+            .Must(d => DateOnly.TryParseExact(d, DateTimeFormat, out _))
+            .WithMessage("Given date is not in the correct format.");
+        RuleFor(a => a.End)
+            .Must(d => DateOnly.TryParseExact(d, DateTimeFormat, out _))
+            .WithMessage("Given date is not in the correct format.");
+        RuleFor(a => a.Comments).MaximumLength(320);
+        RuleFor(a => a.Patient).NotEmpty();
+        RuleFor(a => a.Patient.Name).NotEmpty().Length(1, 50)
+            .WithMessage("Name must be between 1 and 50 characters long.");
+        RuleFor(a => a.Patient.SecondName).NotEmpty().Length(1, 50)
+            .WithMessage("SecondName must be between 1 and 50 characters long.");
+        RuleFor(a => a.Patient.Email).NotEmpty().Length(3, 255)
+            .WithMessage("Email must be between 3 and 255 characters long.").EmailAddress()
+            .WithMessage("Email is not valid.");
+        // TODO: validate phone number
+        RuleFor(a => a.Patient.Phone).NotEmpty().Length(3, 25)
+            .WithMessage("Phone must be between 3 and 25 characters long.");
     }
 }

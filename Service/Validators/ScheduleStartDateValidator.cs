@@ -3,11 +3,11 @@ using FluentValidation.Results;
 
 namespace Service.Validators;
 
-public class ScheduleStartDateValidator
+public sealed class ScheduleStartDateValidator
 {
     private const string DateOnlyFormat = "yyyyMMdd";
 
-    public ValidationResult ValidateScheduleDate(string date)
+    internal ValidationResult ValidateScheduleDate(string date)
     {
         var validator = new InlineValidator<string>();
 

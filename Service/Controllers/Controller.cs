@@ -44,7 +44,7 @@ public class Controller(
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
     [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
-    public async Task<ActionResult<ScheduletDto>> GetAvailability([Required] string date,
+    public async Task<ActionResult<ScheduleDto>> GetAvailability([Required] string date,
         CancellationToken cancellationToken = default)
     {
         var validationResult = validator.ValidateScheduleDate(date);

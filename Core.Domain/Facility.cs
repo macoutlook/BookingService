@@ -2,7 +2,7 @@
 
 namespace Core.Domain;
 
-public class Facility
+public sealed class Facility
 {
     public ulong Id { get; init; }
     

@@ -189,6 +189,7 @@ public static class Bootstrapper
         context.Add(user);
         context.Appointment.AddRange(appointments);
         context.Schedule.Add(schedule);
+
         await context.SaveChangesAsync();
         await context.DisposeAsync();
     }

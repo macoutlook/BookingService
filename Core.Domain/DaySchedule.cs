@@ -1,6 +1,6 @@
 ﻿namespace Core.Domain;
 
-public class DaySchedule
+public sealed class DaySchedule
 {
     public ulong Id { get; init; }
     public required DayOfWeek Day { get; init; }

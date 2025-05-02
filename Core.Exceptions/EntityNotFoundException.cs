@@ -1,13 +1,7 @@
 ﻿namespace Core.Exceptions;
 
-public class EntityNotFoundException : Exception, IException
+public sealed class EntityNotFoundException(string message) : Exception(message), IException
 {
-    public EntityNotFoundException(string message) : base(message)
-    {
-        StatusCode = 400;
-        OutsideMessage = message;
-    }
-
-    public int StatusCode { get; }
-    public string OutsideMessage { get; }
+    public int StatusCode { get; } = 400;
+    public string OutsideMessage { get; } = message;
 }

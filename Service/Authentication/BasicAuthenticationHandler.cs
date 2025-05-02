@@ -2,20 +2,25 @@
 using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
+using System.Text.Json;
 using Core.Persistence.Contract;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Service.Authentication;
 
-internal sealed class BasicAuthHandler(
+internal sealed class BasicAuthenticationHandler(
     IOptionsMonitor<AuthenticationSchemeOptions> options,
     ILoggerFactory logger,
     UrlEncoder encoder,
     IUserRepository userRepository)
     : AuthenticationHandler<AuthenticationSchemeOptions>(options, logger, encoder)
 {
+    private const string? ResponseContentType = "application/json";
+    private static JsonSerializerOptions SerializerOptions => new(JsonSerializerDefaults.Web);
+
     protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
     {
         var auth = Request.Headers["Authorization"];
@@ -45,8 +50,16 @@ internal sealed class BasicAuthHandler(
     protected override async Task HandleChallengeAsync(AuthenticationProperties properties)
     {
         Response.StatusCode = StatusCodes.Status401Unauthorized;
-        Response.ContentType = "application/json";
-        await Response.WriteAsync("{\"error\": \"Authentication failed. Please provide a valid token.\"}");
+        Response.ContentType = ResponseContentType;
+        
+        var problemDetails = new ProblemDetails
+        {
+            Title = "An error occurred",
+            Detail = "Authentication failed. Please provide a valid token.",
+            Status = 401
+        };
+
+        await Response.WriteAsync(JsonSerializer.Serialize(problemDetails, SerializerOptions));
     }
 
     private async Task<bool> IsValidToken(AuthenticationHeaderValue authHeader)
@@ -54,10 +67,7 @@ internal sealed class BasicAuthHandler(
         var (userName, password) = ParseToken(authHeader);
         var user = await userRepository.GetUserByName(userName);
 
-        if (user is null)
-            return false;
-
-        return user.Password.Equals(password);
+        return user is not null && user.Password.Equals(password);
     }
 
     private (string UserName, string Password) ParseToken(AuthenticationHeaderValue authHeader)

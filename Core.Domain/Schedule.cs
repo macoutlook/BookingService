@@ -1,6 +1,6 @@
 ﻿namespace Core.Domain;
 
-public class Schedule
+public sealed class Schedule
 {
     public DateOnly StartDate { get; init; }
     public required Facility Facility { get; init; } = null!;

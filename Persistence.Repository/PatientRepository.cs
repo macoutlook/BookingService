@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.Repository;
 
-public class PatientRepository(AppointmentContext context) : IPatientRepository
+public sealed class PatientRepository(AppointmentContext context) : IPatientRepository
 {
     public async Task<ulong?> GetPatientIdByEmail(string email, CancellationToken cancellationToken = default)
     {

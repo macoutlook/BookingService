@@ -1,6 +1,6 @@
 ﻿namespace Service.Dto;
 
-public record ScheduletDto(
+public record ScheduleDto(
     FacilityDto Facility,
     int SlotDurationMinutes,
     DayScheduleDto? Monday = null,

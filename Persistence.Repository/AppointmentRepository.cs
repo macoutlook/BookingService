@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.Repository;
 
-public class AppointmentRepository(AppointmentContext context) : IAppointmentRepository
+public sealed class AppointmentRepository(AppointmentContext context) : IAppointmentRepository
 {
     # region Command
 

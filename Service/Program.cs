@@ -2,9 +2,7 @@ using System.Text.Json.Serialization;
 using Bootstrapper;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.OpenApi.Models;
-using Scalar.AspNetCore;
 using Service;
 using Service.Adapters;
 using Service.Authentication;
@@ -48,7 +46,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services.AddAuthorization().AddAuthentication()
-    .AddScheme<AuthenticationSchemeOptions, BasicAuthHandler>("Basic", _ => { });
+    .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("Basic", _ => { });
 
 // Register components
 builder.Services.AddSingleton<ScheduleAdapter>();

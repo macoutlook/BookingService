@@ -180,7 +180,7 @@ public class SlotServiceTests
         // Act & Assert
         await _slotService.Invoking(s => s.TakeSlotAsync(appointment))
             .Should().ThrowAsync<EntityNotFoundException>()
-            .WithMessage("Slot cannot be found in any schedule.");
+            .WithMessage("Schedule cannot be found.");
     }
 
     [Fact]

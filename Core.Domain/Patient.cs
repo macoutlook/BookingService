@@ -2,7 +2,7 @@
 
 namespace Core.Domain;
 
-public class Patient
+public sealed class Patient
 {
     public ulong Id { get; set; }
     

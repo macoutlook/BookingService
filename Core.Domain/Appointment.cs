@@ -2,7 +2,7 @@
 
 namespace Core.Domain;
 
-public class Appointment
+public sealed class Appointment
 {
     public ulong Id { get; init; }
     

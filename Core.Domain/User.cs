@@ -2,7 +2,7 @@
 
 namespace Core.Domain;
 
-public class User
+public sealed class User
 {
     public int Id { get; init; }
     [MaxLength(128, ErrorMessage = "Name must be 128 characters or less")]

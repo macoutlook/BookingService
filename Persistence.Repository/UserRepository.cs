@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.Repository;
 
-public class UserRepository(AppointmentContext context) : IUserRepository
+public sealed class UserRepository(AppointmentContext context) : IUserRepository
 {
     public async Task<User?> GetUserByName(string name, CancellationToken cancellationToken = default)
     {

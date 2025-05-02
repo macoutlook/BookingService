@@ -5,8 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Service;
 
-public class ExceptionHandler(ILogger<ExceptionHandler> logger) : IExceptionHandler
+internal class ExceptionHandler(ILogger<ExceptionHandler> logger) : IExceptionHandler
 {
+    private const string? ResponseContentType = "application/problem+json";
     private static JsonSerializerOptions SerializerOptions => new(JsonSerializerDefaults.Web);
     
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception,
@@ -36,7 +37,7 @@ public class ExceptionHandler(ILogger<ExceptionHandler> logger) : IExceptionHand
                 break;
         }
         
-        httpContext.Response.ContentType = "application/problem+json";
+        httpContext.Response.ContentType = ResponseContentType;
         await httpContext.Response.WriteAsync(JsonSerializer.Serialize(problemDetails, SerializerOptions), cancellationToken);
 
         return true;
