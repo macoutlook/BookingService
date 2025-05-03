@@ -1,6 +1,5 @@
 ﻿using System.Net.Http.Headers;
 using System.Security.Claims;
-using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using Core.Persistence.Contract;
@@ -13,12 +12,14 @@ namespace Service.Authentication;
 
 internal sealed class BasicAuthenticationHandler(
     IOptionsMonitor<AuthenticationSchemeOptions> options,
-    ILoggerFactory logger,
+    ILoggerFactory loggerFactory,
     UrlEncoder encoder,
     IUserRepository userRepository)
-    : AuthenticationHandler<AuthenticationSchemeOptions>(options, logger, encoder)
+    : AuthenticationHandler<AuthenticationSchemeOptions>(options, loggerFactory, encoder)
 {
-    private const string? ResponseContentType = "application/json";
+    private readonly ILogger<BasicAuthenticationHandler> _logger =
+        loggerFactory.CreateLogger<BasicAuthenticationHandler>();
+    private const string? ResponseContentType = "application/problem+json";
     private static JsonSerializerOptions SerializerOptions => new(JsonSerializerDefaults.Web);
 
     protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
@@ -32,7 +33,7 @@ internal sealed class BasicAuthenticationHandler(
 
         var authHeader = AuthenticationHeaderValue.Parse(auth!);
 
-        if (!"Basic".Equals(authHeader.Scheme, StringComparison.OrdinalIgnoreCase) || !await IsValidToken(authHeader))
+        if (!"Basic".Equals(authHeader.Scheme, StringComparison.OrdinalIgnoreCase) || !await IsTokenValid(authHeader))
         {
             Response.StatusCode = 401;
             return AuthenticateResult.Fail("Invalid token");
@@ -62,26 +63,44 @@ internal sealed class BasicAuthenticationHandler(
         await Response.WriteAsync(JsonSerializer.Serialize(problemDetails, SerializerOptions));
     }
 
-    private async Task<bool> IsValidToken(AuthenticationHeaderValue authHeader)
+    private async Task<bool> IsTokenValid(AuthenticationHeaderValue authHeader)
     {
-        var (userName, password) = ParseToken(authHeader);
-        var user = await userRepository.GetUserByName(userName);
+        if (authHeader.Parameter is null)
+        {
+            _logger.LogWarning("No token provided.");
+            return false;
+        }
+        if(!TryParseToken(authHeader.Parameter, out var credentials))
+            return false;
+        var user = await userRepository.GetUserByName(credentials.userName);
 
-        return user is not null && user.Password.Equals(password);
+        return user is not null && user.Password.Equals(credentials.password);
     }
 
-    private (string UserName, string Password) ParseToken(AuthenticationHeaderValue authHeader)
+    private bool TryParseToken(string token, out (string userName, string password) credentials)
     {
         // Validate and decode Base64
-        var credentialBytes = Convert.FromBase64String(authHeader.Parameter ?? "");
+        credentials = (string.Empty, string.Empty);
+        Span<byte> credentialBytes = new byte[token.Length];
+        var wasTokenParsed = Convert.TryFromBase64String(token, credentialBytes, out int bytesWritten);
 
-        if (credentialBytes.Length == 0) throw new ArgumentException("Invalid Base64 string", nameof(authHeader));
 
-        var credentials = Encoding.UTF8.GetString(credentialBytes).Split(':', 2);
+        if (wasTokenParsed is false || credentialBytes.Length == 0)
+        {
+            _logger.LogWarning("Invalid base64 token string.");
+            return false;
+        }
 
-        if (credentials.Length != 2)
-            throw new ArgumentException("Token must be in 'username:password' format", nameof(authHeader));
+        var credentialsArray = System.Text.Encoding.UTF8.GetString(credentialBytes.Slice(0, bytesWritten)).Split(':', 2);
 
-        return (credentials[0], credentials[1]);
+        if (credentialsArray.Length != 2)
+        {
+            _logger.LogWarning("Token must be in 'username:password' format");
+            return false;
+        }
+        
+        credentials = (credentialsArray[0], credentialsArray[1]);
+        
+        return true;
     }
 }
