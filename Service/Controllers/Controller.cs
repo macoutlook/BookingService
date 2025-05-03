@@ -23,7 +23,7 @@ public class Controller(
     : ControllerBase
 {
     [HttpPost]
-    [Route("/TakeSlot")]
+    [Route("TakeSlot")]
     [ProducesResponseType((int)HttpStatusCode.Created)]
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]

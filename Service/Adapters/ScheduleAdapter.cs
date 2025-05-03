@@ -13,7 +13,7 @@ public sealed class ScheduleAdapter(IMapper mapper)
         var thursday = GetDaySchedule(schedule, DayOfWeek.Thursday);
         var friday = GetDaySchedule(schedule, DayOfWeek.Friday);
 
-        var scheduleDto = new ScheduleDto(mapper.Map<FacilityDto>(schedule.Facility), schedule.SlotDurationMinutes,
+        var scheduleDto = new ScheduleDto(mapper.Map<FacilityDto>(schedule.Facility), (int)schedule.SlotDurationMinutes,
             monday, tuesday, wednesday, thursday, friday);
         return scheduleDto;
     }

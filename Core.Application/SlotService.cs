@@ -21,12 +21,25 @@ public class SlotService(
 
         appointment.Patient.Id = patientId.Value;
 
-        var closestMonday = GetClosestMonday(appointment.Slot.Start.Date);
-        var schedule = await appointmentRepository.GetScheduleAsync(closestMonday, cancellationToken);
+        var currentWeekMonday = GetCurrentWeekMonday(appointment.Slot.Start.Date);
+        var schedule = await appointmentRepository.GetScheduleAsync(currentWeekMonday, cancellationToken);
         if (schedule is null)
             throw new EntityNotFoundException("Schedule cannot be found.");
 
-        appointment.Slot.ScheduleStartDate = closestMonday;
+        appointment.Slot.ScheduleStartDate = currentWeekMonday;
+
+        var daySchedule = schedule.DaySchedules.FirstOrDefault(d => d.Day.Equals(appointment.Slot.Day));
+        if (daySchedule is null)
+            throw new EntityNotFoundException("Day schedule for appointment day cannot be found.");
+
+        if (!appointment.DoesAppointmentMatchSlotDuration(schedule.SlotDurationMinutes))
+            throw new ScheduleException("Slot duration does not match schedule slot duration.");
+        
+        if (!appointment.DoesAppointmentMatchWorkPeriod(schedule.StartDate, daySchedule))
+            throw new ScheduleException("Slot is out of working hours.");
+
+        if (!appointment.DoesAppointmentMatchPlannedBreak(schedule.StartDate, daySchedule))
+            throw new ScheduleException("Slot is during planned break.");
 
         return await appointmentRepository.AddAsync(appointment, cancellationToken);
     }
@@ -37,7 +50,7 @@ public class SlotService(
         return await appointmentRepository.GetScheduleAsync(dateOnly, cancellationToken);
     }
 
-    private DateOnly GetClosestMonday(DateTime date)
+    private DateOnly GetCurrentWeekMonday(DateTime date)
     {
         var diff = date.DayOfWeek - DayOfWeek.Monday;
         return DateOnly.FromDateTime(date.AddDays(-diff));

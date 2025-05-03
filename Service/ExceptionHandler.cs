@@ -28,6 +28,7 @@ internal class ExceptionHandler(ILogger<ExceptionHandler> logger) : IExceptionHa
         {
             case IException internalException:
                 problemDetails.Status = internalException.StatusCode;
+                httpContext.Response.StatusCode = internalException.StatusCode;
                 logger.LogError(exception,
                     "Exception: was thrown for request with id: {traceId}", httpContext.TraceIdentifier);
                 break;

@@ -60,6 +60,13 @@ public class SlotServiceTests
             WorkPeriod = workPeriod
         };
 
+        var dayScheduleThursday = new DaySchedule
+        {
+            Id = 3,
+            Day = DayOfWeek.Thursday,
+            WorkPeriod = workPeriod
+        };
+
         var busySlot = new Slot
         {
             Id = 1,
@@ -73,30 +80,30 @@ public class SlotServiceTests
         {
             Facility = facility,
             SlotDurationMinutes = 30,
-            DaySchedules = new List<DaySchedule> { dayScheduleMonday, dayScheduleTuesday },
+            DaySchedules = new List<DaySchedule> { dayScheduleMonday, dayScheduleTuesday, dayScheduleThursday },
             StartDate = startDate,
             BusySlots = new List<Slot> { busySlot }
         };
 
         var appointment = new Appointment
         {
-            Id = 1, // Example ID
+            Id = 1,
             Slot = new Slot
             {
-                Id = 1, // Example Slot ID
-                Start = new DateTime(2025, 5, 1, 9, 0, 0), // Example start time
-                End = new DateTime(2025, 5, 1, 10, 0, 0), // Example end time
-                Day = DayOfWeek.Thursday, // Example day
-                ScheduleStartDate = new DateOnly(2025, 5, 1) // Example schedule start date
+                Id = 1,
+                Start = new DateTime(2025, 5, 8, 9, 0, 0),
+                End = new DateTime(2025, 5, 8, 9, 30, 0),
+                Day = DayOfWeek.Thursday,
+                ScheduleStartDate = new DateOnly(2025, 5, 5)
             },
-            Comments = "Initial consultation", // Optional comments
+            Comments = "Initial consultation",
             Patient = new Patient
             {
-                Id = 1, // Example Patient ID
-                Name = "John", // Example first name
-                SecondName = "Doe", // Example second name
-                Email = "john.doe@example.com", // Example email
-                Phone = "+1234567890" // Example phone number
+                Id = 1,
+                Name = "John",
+                SecondName = "Doe",
+                Email = "john.doe@example.com",
+                Phone = "+1234567890"
             }
         };
         _patientRepositoryMock.GetPatientIdByEmail(Arg.Any<string>(), Arg.Any<CancellationToken>())
@@ -119,23 +126,23 @@ public class SlotServiceTests
         // Arrange
         var appointment = new Appointment
         {
-            Id = 1, // Example ID
+            Id = 1,
             Slot = new Slot
             {
-                Id = 1, // Example Slot ID
-                Start = new DateTime(2025, 5, 1, 9, 0, 0), // Example start time
-                End = new DateTime(2025, 5, 1, 10, 0, 0), // Example end time
-                Day = DayOfWeek.Thursday, // Example day
-                ScheduleStartDate = new DateOnly(2025, 5, 1) // Example schedule start date
+                Id = 1,
+                Start = new DateTime(2025, 5, 1, 9, 0, 0),
+                End = new DateTime(2025, 5, 1, 10, 0, 0),
+                Day = DayOfWeek.Thursday,
+                ScheduleStartDate = new DateOnly(2025, 5, 1)
             },
-            Comments = "Initial consultation", // Optional comments
+            Comments = "Initial consultation",
             Patient = new Patient
             {
-                Id = 1, // Example Patient ID
-                Name = "John", // Example first name
-                SecondName = "Doe", // Example second name
-                Email = "john.doe@example.com", // Example email
-                Phone = "+1234567890" // Example phone number
+                Id = 1,
+                Name = "John",
+                SecondName = "Doe",
+                Email = "john.doe@example.com",
+                Phone = "+1234567890"
             }
         };
         _patientRepositoryMock.GetPatientIdByEmail(Arg.Any<string>(), Arg.Any<CancellationToken>())
@@ -153,23 +160,23 @@ public class SlotServiceTests
         // Arrange
         var appointment = new Appointment
         {
-            Id = 1, // Example ID
+            Id = 1,
             Slot = new Slot
             {
-                Id = 1, // Example Slot ID
-                Start = new DateTime(2025, 5, 1, 9, 0, 0), // Example start time
-                End = new DateTime(2025, 5, 1, 10, 0, 0), // Example end time
-                Day = DayOfWeek.Thursday, // Example day
-                ScheduleStartDate = new DateOnly(2025, 5, 1) // Example schedule start date
+                Id = 1,
+                Start = new DateTime(2025, 5, 1, 9, 0, 0),
+                End = new DateTime(2025, 5, 1, 10, 0, 0),
+                Day = DayOfWeek.Thursday,
+                ScheduleStartDate = new DateOnly(2025, 5, 1)
             },
-            Comments = "Initial consultation", // Optional comments
+            Comments = "Initial consultation",
             Patient = new Patient
             {
-                Id = 1, // Example Patient ID
-                Name = "John", // Example first name
-                SecondName = "Doe", // Example second name
-                Email = "john.doe@example.com", // Example email
-                Phone = "+1234567890" // Example phone number
+                Id = 1,
+                Name = "John",
+                SecondName = "Doe",
+                Email = "john.doe@example.com",
+                Phone = "+1234567890"
             }
         };
         _patientRepositoryMock.GetPatientIdByEmail(Arg.Any<string>(), Arg.Any<CancellationToken>())
@@ -247,5 +254,200 @@ public class SlotServiceTests
         // Assert
         result.Should().NotBeNull();
         result.Should().BeEquivalentTo(expectedSchedule);
+    }
+
+    [Fact]
+    public async Task TakeSlotAsync_DayScheduleNotFound_ThrowsEntityNotFoundException()
+    {
+        // Arrange
+        var appointment = new Appointment
+        {
+            Id = 1,
+            Slot = new Slot
+            {
+                Id = 1,
+                Start = new DateTime(2025, 5, 7, 9, 0, 0),
+                End = new DateTime(2025, 5, 7, 10, 0, 0),
+                Day = DayOfWeek.Wednesday,
+                ScheduleStartDate = new DateOnly(2025, 5, 1)
+            },
+            Comments = "Initial consultation",
+            Patient = new Patient
+            {
+                Id = 1,
+                Name = "John",
+                SecondName = "Doe",
+                Email = "john.doe@example.com",
+                Phone = "+1234567890"
+            }
+        };
+        _patientRepositoryMock.GetPatientIdByEmail(Arg.Any<string>(), Arg.Any<CancellationToken>())
+            .Returns(1UL);
+        _appointmentRepositoryMock.GetScheduleAsync(Arg.Any<DateOnly>(), Arg.Any<CancellationToken>())
+            .Returns(new Schedule
+            {
+                Facility = new Facility { Id = 1, Name = "Facility", Address = "Address" },
+                SlotDurationMinutes = 30,
+                DaySchedules = new List<DaySchedule>() // Empty list to simulate no day schedule found
+            });
+
+        // Act & Assert
+        await _slotService.Invoking(s => s.TakeSlotAsync(appointment))
+            .Should().ThrowAsync<EntityNotFoundException>()
+            .WithMessage("Day schedule for appointment day cannot be found.");
+    }
+
+    [Fact]
+    public async Task TakeSlotAsync_SlotDurationMismatch_ThrowsScheduleException()
+    {
+        // Arrange
+        var appointment = new Appointment
+        {
+            Id = 1,
+            Slot = new Slot
+            {
+                Id = 1,
+                Start = new DateTime(2025, 5, 7, 9, 0, 0),
+                End = new DateTime(2025, 5, 7, 9, 45, 0), // 45 minutes duration
+                Day = DayOfWeek.Wednesday,
+                ScheduleStartDate = new DateOnly(2025, 5, 5)
+            },
+            Comments = "Initial consultation",
+            Patient = new Patient
+            {
+                Id = 1,
+                Name = "John",
+                SecondName = "Doe",
+                Email = "john.doe@example.com",
+                Phone = "+1234567890"
+            }
+        };
+        _patientRepositoryMock.GetPatientIdByEmail(Arg.Any<string>(), Arg.Any<CancellationToken>())
+            .Returns(1UL);
+        _appointmentRepositoryMock.GetScheduleAsync(Arg.Any<DateOnly>(), Arg.Any<CancellationToken>())
+            .Returns(new Schedule
+            {
+                Facility = new Facility { Id = 1, Name = "Facility", Address = "Address" },
+                SlotDurationMinutes = 30, // Expected 30 minutes duration
+                DaySchedules = new List<DaySchedule>
+                {
+                    new()
+                    {
+                        Id = 1,
+                        Day = DayOfWeek.Wednesday,
+                        WorkPeriod = new WorkPeriod { StartHour = 9, EndHour = 17 }
+                    }
+                }
+            });
+
+        // Act & Assert
+        await _slotService.Invoking(s => s.TakeSlotAsync(appointment))
+            .Should().ThrowAsync<ScheduleException>()
+            .WithMessage("Slot duration does not match schedule slot duration.");
+    }
+
+    [Fact]
+    public async Task TakeSlotAsync_SlotOutOfWorkingHours_ThrowsScheduleException()
+    {
+        // Arrange
+        var appointment = new Appointment
+        {
+            Id = 1,
+            Slot = new Slot
+            {
+                Id = 1,
+                Start = new DateTime(2025, 5, 8, 18, 0, 0), // 18:00, outside work hours
+                End = new DateTime(2025, 5, 8, 19, 0, 0),
+                Day = DayOfWeek.Thursday,
+                ScheduleStartDate = new DateOnly(2025, 5, 5)
+            },
+            Comments = "Initial consultation",
+            Patient = new Patient
+            {
+                Id = 1,
+                Name = "John",
+                SecondName = "Doe",
+                Email = "john.doe@example.com",
+                Phone = "+1234567890"
+            }
+        };
+        _patientRepositoryMock.GetPatientIdByEmail(Arg.Any<string>(), Arg.Any<CancellationToken>())
+            .Returns(1UL);
+        _appointmentRepositoryMock.GetScheduleAsync(Arg.Any<DateOnly>(), Arg.Any<CancellationToken>())
+            .Returns(new Schedule
+            {
+                Facility = new Facility { Id = 1, Name = "Facility", Address = "Address" },
+                SlotDurationMinutes = 60,
+                DaySchedules = new List<DaySchedule>
+                {
+                    new()
+                    {
+                        Id = 1,
+                        Day = DayOfWeek.Thursday,
+                        WorkPeriod = new WorkPeriod { StartHour = 9, EndHour = 17 } // Work hours: 9:00 to 17:00
+                    }
+                }
+            });
+
+        // Act & Assert
+        await _slotService.Invoking(s => s.TakeSlotAsync(appointment))
+            .Should().ThrowAsync<ScheduleException>()
+            .WithMessage("Slot is out of working hours.");
+    }
+
+    [Fact]
+    public async Task TakeSlotAsync_SlotDuringPlannedBreak_ThrowsScheduleException()
+    {
+        // Arrange
+        var appointment = new Appointment
+        {
+            Id = 1,
+            Slot = new Slot
+            {
+                Id = 1,
+                Start = new DateTime(2025, 5, 8, 12, 30, 0), // During lunch break
+                End = new DateTime(2025, 5, 8, 13, 30, 0),
+                Day = DayOfWeek.Thursday,
+                ScheduleStartDate = new DateOnly(2025, 5, 5)
+            },
+            Comments = "Initial consultation",
+            Patient = new Patient
+            {
+                Id = 1,
+                Name = "John",
+                SecondName = "Doe",
+                Email = "john.doe@example.com",
+                Phone = "+1234567890"
+            }
+        };
+        _patientRepositoryMock.GetPatientIdByEmail(Arg.Any<string>(), Arg.Any<CancellationToken>())
+            .Returns(1UL);
+        _appointmentRepositoryMock.GetScheduleAsync(Arg.Any<DateOnly>(), Arg.Any<CancellationToken>())
+            .Returns(new Schedule
+            {
+                StartDate = new DateOnly(2025, 5, 5),
+                Facility = new Facility { Id = 1, Name = "Facility", Address = "Address" },
+                SlotDurationMinutes = 60,
+                DaySchedules = new List<DaySchedule>
+                {
+                    new()
+                    {
+                        Id = 1,
+                        Day = DayOfWeek.Thursday,
+                        WorkPeriod = new WorkPeriod
+                        {
+                            StartHour = 9,
+                            EndHour = 17,
+                            LunchStartHour = 12,
+                            LunchEndHour = 13 // Lunch break from 12:00 to 13:00
+                        }
+                    }
+                }
+            });
+
+        // Act & Assert
+        await _slotService.Invoking(s => s.TakeSlotAsync(appointment))
+            .Should().ThrowAsync<ScheduleException>()
+            .WithMessage("Slot is during planned break.");
     }
 }

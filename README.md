@@ -12,3 +12,9 @@ Run command `dotnet ef migrations add FirstMigration -c AppointmentContext --sta
 
 # To generate certificate:
 Run command `dotnet dev-certs https --trust`
+
+# Solution written with assist of Cascade(former Codeium)
+Example prompts:
+1. "Hey, generate me unit test which covers that line from SlotService:
+   'throw new EntityNotFoundException("Day schedule for appointment day cannot be found.");'
+Use Xunit with NSubstitute and FluentAssertions. Keep MS unit tests recommendations."

@@ -84,7 +84,6 @@ internal sealed class BasicAuthenticationHandler(
         Span<byte> credentialBytes = new byte[token.Length];
         var wasTokenParsed = Convert.TryFromBase64String(token, credentialBytes, out int bytesWritten);
 
-
         if (wasTokenParsed is false || credentialBytes.Length == 0)
         {
             _logger.LogWarning("Invalid base64 token string.");
