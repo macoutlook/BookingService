@@ -3,6 +3,7 @@ using Service.Dto;
 
 namespace Service.Adapters;
 
+// TODO: Add unit tests
 public sealed class ScheduleAdapter(IMapper mapper)
 {
     public ScheduleDto Adapt(Core.Domain.Schedule schedule)

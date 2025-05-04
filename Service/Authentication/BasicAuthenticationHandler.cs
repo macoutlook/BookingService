@@ -10,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Service.Authentication;
 
+// TODO: Add unit tests
 internal sealed class BasicAuthenticationHandler(
     IOptionsMonitor<AuthenticationSchemeOptions> options,
     ILoggerFactory loggerFactory,

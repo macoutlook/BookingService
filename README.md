@@ -6,6 +6,13 @@ To run project:
 1. Run `docker-compose up` command
 2. Run project- it will generate the database with table and data feed.
 3. Or run migration and then run project.
+4. Service is running on https://localhost:7254 and can be tested with Swagger.
+
+## Unit tests
+Unit tests are written with xUnit and NSubstitute and FluentAssertions. Unit tests will be added for ScheduleAdapter and BasicAuthenticationHandler. 
+
+## Integration tests
+Integration tests are about to be implemented with using TestContainers library
 
 # To generate migration:
 Run command `dotnet ef migrations add FirstMigration -c AppointmentContext --startup-project ../Service`
@@ -13,8 +20,17 @@ Run command `dotnet ef migrations add FirstMigration -c AppointmentContext --sta
 # To generate certificate:
 Run command `dotnet dev-certs https --trust`
 
+# CI/CD
+GitHub Actions will be added in future.
+
+# Next steps
+1. Add integration tests
+2. Add CI/CD
+3. Add Central Package Management
+4. Implement CQRS in future with solution endpoints growth.
+
 # Solution written with assist of Cascade(former Codeium)
 Example prompts:
 1. "Hey, generate me unit test which covers that line from SlotService:
    'throw new EntityNotFoundException("Day schedule for appointment day cannot be found.");'
-Use Xunit with NSubstitute and FluentAssertions. Keep MS unit tests recommendations."
+Use xunit with NSubstitute and FluentAssertions. Keep MS unit tests recommendations."

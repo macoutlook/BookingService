@@ -11,9 +11,9 @@ using Service.Validators;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers()
-    .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
-    .AddFluentValidation(fv =>
-        fv.RegisterValidatorsFromAssemblyContaining<AppointmentDtoValidator>());
+    .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+
+builder.Services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
 
 builder.Services.AddEndpointsApiExplorer();
 
