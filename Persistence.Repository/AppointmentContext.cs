@@ -19,12 +19,23 @@ public class AppointmentContext(DbContextOptions<AppointmentContext> options) : 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Schedule>()
-            .HasKey(s => s.StartDate);
+            .HasKey(s => s.Id);
         modelBuilder.Entity<Schedule>()
             .HasIndex(s => s.StartDate)
             .HasDatabaseName("IX_StartDate")
             .IsUnique()
             .IsClustered(false);
+        
+        modelBuilder.Entity<Schedule>()
+            .HasAlternateKey(s => s.StartDate);
+        
+        modelBuilder.Entity<Slot>(entity =>
+        {
+            entity.HasOne<Schedule>()
+                .WithMany(s => s.BusySlots)
+                .HasForeignKey(s => s.ScheduleStartDate)
+                .HasPrincipalKey(s => s.StartDate);
+        });
         
         modelBuilder.Entity<Appointment>()
             .HasKey(a => a.Id);

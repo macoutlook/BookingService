@@ -450,4 +450,71 @@ public class SlotServiceTests
             .Should().ThrowAsync<ScheduleException>()
             .WithMessage("Slot is during planned break.");
     }
+    
+        [Fact]
+    public async Task TakeSlotAsync_SlotAlreadyTaken_ThrowsScheduleException()
+    {
+        // Arrange
+        var appointment = new Appointment
+        {
+            Id = 1,
+            Slot = new Slot
+            {
+                Id = 1,
+                Start = new DateTime(2025, 5, 8, 13, 30, 0), // Slot alread taken
+                End = new DateTime(2025, 5, 8, 14, 30, 0),
+                Day = DayOfWeek.Thursday,
+                ScheduleStartDate = new DateOnly(2025, 5, 5)
+            },
+            Comments = "Initial consultation",
+            Patient = new Patient
+            {
+                Id = 1,
+                Name = "John",
+                SecondName = "Doe",
+                Email = "john.doe@example.com",
+                Phone = "+1234567890"
+            }
+        };
+        _patientRepositoryMock.GetPatientIdByEmail(Arg.Any<string>(), Arg.Any<CancellationToken>())
+            .Returns(1UL);
+        _appointmentRepositoryMock.GetScheduleAsync(Arg.Any<DateOnly>(), Arg.Any<CancellationToken>())
+            .Returns(new Schedule
+            {
+                StartDate = new DateOnly(2025, 5, 5),
+                Facility = new Facility { Id = 1, Name = "Facility", Address = "Address" },
+                SlotDurationMinutes = 60,
+                DaySchedules = new List<DaySchedule>
+                {
+                    new()
+                    {
+                        Id = 1,
+                        Day = DayOfWeek.Thursday,
+                        WorkPeriod = new WorkPeriod
+                        {
+                            StartHour = 9,
+                            EndHour = 17,
+                            LunchStartHour = 12,
+                            LunchEndHour = 13 // Lunch break from 12:00 to 13:00
+                        }
+                    }
+                },
+                BusySlots = new List<Slot>
+                {
+                    new()
+                    {
+                        Id = 1,
+                        Start = new DateTime(2025, 5, 8, 13, 30, 0), // Slot already taken
+                        End = new DateTime(2025, 5, 8, 14, 30, 0),
+                        Day = DayOfWeek.Thursday,
+                        ScheduleStartDate = new DateOnly(2025, 5, 5)
+                    }
+                }
+            });
+
+        // Act & Assert
+        await _slotService.Invoking(s => s.TakeSlotAsync(appointment))
+            .Should().ThrowAsync<ScheduleException>()
+            .WithMessage("Slot is already taken.");
+    }
 }

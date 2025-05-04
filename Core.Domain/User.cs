@@ -2,9 +2,8 @@
 
 namespace Core.Domain;
 
-public sealed class User
+public sealed class User : Entity<ulong>
 {
-    public int Id { get; init; }
     [MaxLength(128, ErrorMessage = "Name must be 128 characters or less")]
     [MinLength(1)]
     public required string Name { get; init; }

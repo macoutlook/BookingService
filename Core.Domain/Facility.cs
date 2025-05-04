@@ -2,10 +2,8 @@
 
 namespace Core.Domain;
 
-public sealed class Facility
+public sealed class Facility : Entity<ulong>
 {
-    public ulong Id { get; init; }
-    
     [MaxLength(255, ErrorMessage = "Name must be 255 characters or less")]
     [MinLength(1)]
     public required string Name { get; init; } = null!;

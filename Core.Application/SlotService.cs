@@ -34,12 +34,15 @@ public class SlotService(
 
         if (!appointment.DoesAppointmentMatchSlotDuration(schedule.SlotDurationMinutes))
             throw new ScheduleException("Slot duration does not match schedule slot duration.");
-        
+
         if (!appointment.DoesAppointmentMatchWorkPeriod(schedule.StartDate, daySchedule))
             throw new ScheduleException("Slot is out of working hours.");
 
         if (!appointment.DoesAppointmentMatchPlannedBreak(schedule.StartDate, daySchedule))
             throw new ScheduleException("Slot is during planned break.");
+
+        if (appointment.DoesAppointmentOverlapExistingAppointments(schedule.BusySlots.ToList()))
+            throw new ScheduleException("Slot is already taken.");
 
         return await appointmentRepository.AddAsync(appointment, cancellationToken);
     }

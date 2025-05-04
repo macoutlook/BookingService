@@ -1,9 +1,7 @@
 ﻿namespace Core.Domain;
 
-public sealed class WorkPeriod
+public sealed class WorkPeriod : Entity<ulong>
 {
-    public ulong Id { get; init; }
-    
     public required int StartHour { get; init; }
     public required int EndHour { get; init; }
     public int LunchStartHour { get; init; }

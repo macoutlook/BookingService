@@ -1,6 +1,6 @@
 ﻿namespace Core.Domain;
 
-public sealed class Schedule
+public sealed class Schedule : Entity<ulong>
 {
     public DateOnly StartDate { get; init; }
     public required Facility Facility { get; init; } = null!;

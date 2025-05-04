@@ -2,9 +2,8 @@
 
 namespace Core.Domain;
 
-public sealed class Patient
+public sealed class Patient : Entity<ulong>
 {
-    public ulong Id { get; set; }
     
     [MaxLength(50, ErrorMessage = "Name must be 50 characters or less")]
     [MinLength(1)]
