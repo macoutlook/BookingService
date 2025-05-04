@@ -20,8 +20,14 @@ Run command `dotnet ef migrations add FirstMigration -c AppointmentContext --sta
 # To generate certificate:
 Run command `dotnet dev-certs https --trust`
 
+# Data storage, data access and data approach
+Data is stored in MS SQL Server. Tables are normalized to minimize data duplication.
+Currently, Entity Framework Core is used as ORM since querying is simple and easy to maintain.
+With Solution development and growing complexity it will be replaced with Dapper and custom queries.
+Tables were designed with CodeFirst approach.
+
 # CI/CD
-GitHub Actions will be added in future.
+GitHub Actions will be added in the future.
 
 # Next steps
 1. Add integration tests

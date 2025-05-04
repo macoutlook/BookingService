@@ -3,10 +3,15 @@ using Bootstrapper;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using Service;
 using Service.Adapters;
 using Service.Authentication;
 using Service.Validators;
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
 
